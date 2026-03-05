@@ -52,7 +52,7 @@
           },
           "name": {
             "type": "string",
-            "description": "中文角色名 (2-4字)"
+            "description": "角色名"
           },
           "responsibility": {
             "type": "string"

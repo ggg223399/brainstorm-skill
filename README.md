@@ -88,7 +88,7 @@ Presets are JSON files following `schema.json`. Key fields per agent:
 ```json
 {
   "id": "unique-slug",
-  "name": "Role Name (2-6 chars)",
+  "name": "Role Name",
   "responsibility": "One-line description",
   "thinking_style": "analytical | divergent | critical | practical | empathetic",
   "system_prompt": "Full system prompt with constraints and output requirements",

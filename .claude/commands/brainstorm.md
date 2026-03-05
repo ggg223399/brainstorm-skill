@@ -32,7 +32,7 @@ Phase 0 (Preset查找) → Phase 1 (角色设计) → Phase 2 (上下文收集) 
 ```json
 {
   "id": "unique-slug",
-  "name": "中文角色名（2-6字）",
+  "name": "角色名",
   "responsibility": "一句话职责描述",
   "thinking_style": "analytical | divergent | critical | practical | empathetic",
   "system_prompt": "完整的 system prompt",
