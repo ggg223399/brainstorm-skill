@@ -1,0 +1,107 @@
+{
+  "description": "跨 Preset 的共享知识库，基于历史反馈积累的最佳实践",
+  "last_updated": "2026-02-16",
+  "effective_patterns": {
+    "critical_role": {
+      "description": "质疑/审查型角色的最佳配置",
+      "recommended_config": {
+        "thinking_style": "critical",
+        "subagent_type": "oracle",
+        "prompt_keywords": ["挑战", "风险", "检查", "质疑", "审查", "问题"]
+      },
+      "source_presets": ["fitness-plan"],
+      "success_rate": 0.85,
+      "sample_prompt_snippet": "你是计划审查员（偏保守），专门挑错..."
+    },
+    "practitioner_role": {
+      "description": "实践者/用户视角角色的最佳配置",
+      "recommended_config": {
+        "thinking_style": "empathetic",
+        "subagent_type": "metis",
+        "prompt_keywords": ["执行", "落地", "坚持", "习惯", "实际", "可行"]
+      },
+      "source_presets": ["fitness-plan"],
+      "success_rate": 0.90,
+      "sample_prompt_snippet": "你扮演实践者与陪跑者...用执行视角审视计划"
+    },
+    "divergent_role": {
+      "description": "发散/创意型角色的最佳配置",
+      "recommended_config": {
+        "thinking_style": "divergent",
+        "subagent_type": "oracle",
+        "prompt_keywords": ["可能性", "创新", "另一种", "如果", "探索"]
+      },
+      "source_presets": [],
+      "success_rate": null,
+      "sample_prompt_snippet": null
+    },
+    "analytical_role": {
+      "description": "分析/逻辑型角色的最佳配置",
+      "recommended_config": {
+        "thinking_style": "analytical",
+        "subagent_type": "oracle",
+        "prompt_keywords": ["分析", "逻辑", "数据", "依据", "结构"]
+      },
+      "source_presets": ["fitness-plan"],
+      "success_rate": 0.80,
+      "sample_prompt_snippet": null
+    }
+  },
+  "workflow_patterns": {
+    "collect_user_context": {
+      "description": "讨论前必须收集用户个人上下文，否则只能产出通用建议",
+      "reason": "通用方案的营养数值、时间安排、场景约束都是假设值。收集后可注入 agent prompt，输出质量大幅提升",
+      "implementation": "Phase 1.5：用 mcp_question 一次性收集，按 preset tags 动态生成问题",
+      "tag_specific_questions": {
+        "fitness/health": ["性别", "年龄", "身高体重", "运动基础", "伤病", "训练场地", "可用时间", "目标优先级"],
+        "tech/engineering": ["技术栈", "团队规模", "现有架构", "部署环境"],
+        "product/business": ["目标用户", "市场阶段", "竞品", "预算"],
+        "investment/finance": ["风险偏好", "投资周期", "资金规模"]
+      },
+      "discovered_in": "fitness-plan",
+      "discovered_date": "2026-02-16"
+    }
+  },
+  "anti_patterns": {
+    "momus_for_discussion": {
+      "description": "不要用 momus 做开放式讨论角色",
+      "reason": "momus 会要求具体文件路径，拒绝开放式 prompt",
+      "alternative": "用 oracle + 低温度 (0.2-0.4) 代替",
+      "discovered_in": "fitness-plan",
+      "discovered_date": "2026-02-15"
+    },
+    "too_many_analytical": {
+      "description": "避免多个角色都是分析型",
+      "reason": "会导致观点重复，缺乏张力",
+      "alternative": "确保至少有 1 个发散型 + 1 个批判型 + 1 个实践型",
+      "discovered_in": null,
+      "discovered_date": null
+    },
+    "divergent_for_structured_output": {
+      "description": "不要对需要输出结构化数据的角色用 divergent + 高温度",
+      "reason": "角色输出心率区间、时间分配、组次表格等结构化数据时，divergent+高温度会导致输出与其他角色的数据不一致（如 D1-D5 编号冲突、时间分配矛盾）",
+      "alternative": "按输出类型选 thinking_style：结构化方案 → analytical (0.3-0.5)，创意点子 → divergent (0.8-0.9)",
+      "discovered_in": "fitness-plan",
+      "discovered_date": "2026-02-16"
+    },
+    "unresolved_cross_role_conflicts": {
+      "description": "综合阶段必须检测并消解角色间的数据冲突",
+      "reason": "并行执行的角色各自独立输出，容易在编号、数值、时间分配上产生矛盾。如果综合阶段不主动检测，冲突会直接透传到最终报告",
+      "alternative": "综合前先提取各角色的关键数据点逐项对比，发现冲突后按优先级决策（安全>批判修正>保守值）",
+      "discovered_in": "fitness-plan",
+      "discovered_date": "2026-02-16"
+    }
+  },
+  "role_combinations": {
+    "minimum_viable": {
+      "description": "最小可行角色组合（3 角色）",
+      "roles": ["analytical", "critical", "practical"],
+      "rationale": "分析提供方案 → 批判发现问题 → 实践验证可行性"
+    },
+    "comprehensive": {
+      "description": "全面覆盖组合（5 角色）",
+      "roles": ["analytical", "divergent", "critical", "practical", "empathetic"],
+      "rationale": "增加创意发散和情感共鸣维度"
+    }
+  }
+}

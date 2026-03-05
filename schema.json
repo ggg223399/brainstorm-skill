@@ -1,0 +1,134 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Brainstorm V4 Preset",
+  "description": "动态多角色讨论的角色配置预设（V4：order 分组 × rounds 正交模型）",
+  "type": "object",
+  "required": ["topic", "description", "created_at", "agents", "discussion_config"],
+  "properties": {
+    "topic": {
+      "type": "string",
+      "description": "话题名称"
+    },
+    "description": {
+      "type": "string",
+      "description": "一句话说明这个 preset 适用的场景"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date"
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date"
+    },
+    "version": {
+      "type": "integer",
+      "minimum": 1,
+      "default": 1
+    },
+    "tags": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "usage_stats": {
+      "type": "object",
+      "properties": {
+        "total_sessions": { "type": "integer", "minimum": 0 },
+        "avg_quality_score": { "type": "number", "minimum": 1, "maximum": 5 },
+        "last_used": { "type": "string", "format": "date" }
+      }
+    },
+    "agents": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 6,
+      "items": {
+        "type": "object",
+        "required": ["id", "name", "responsibility", "thinking_style", "system_prompt", "subagent_type", "order"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z0-9-]+$"
+          },
+          "name": {
+            "type": "string",
+            "description": "中文角色名 (2-4字)"
+          },
+          "responsibility": {
+            "type": "string"
+          },
+          "thinking_style": {
+            "type": "string",
+            "enum": ["analytical", "divergent", "critical", "practical", "empathetic"]
+          },
+          "system_prompt": {
+            "type": "string"
+          },
+          "subagent_type": {
+            "type": "string",
+            "enum": ["oracle", "metis"]
+          },
+          "order": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "阶段编号。相同 order = 同阶段并行，不同 order = 跨阶段顺序执行"
+          },
+          "deprecated": {
+            "type": "boolean",
+            "default": false
+          },
+          "effectiveness_score": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          }
+        }
+      }
+    },
+    "evolution_history": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["date", "trigger", "changes"],
+        "properties": {
+          "date": { "type": "string", "format": "date" },
+          "trigger": {
+            "type": "string",
+            "enum": ["usage_threshold", "weak_agent_threshold", "missing_perspective", "low_score", "manual"]
+          },
+          "changes": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["type"],
+              "properties": {
+                "type": { "type": "string", "enum": ["add_agent", "remove_agent", "modify_agent", "update_prompt"] },
+                "agent_id": { "type": "string" },
+                "reason": { "type": "string" }
+              }
+            }
+          },
+          "before_score": { "type": "number" },
+          "after_score": { "type": ["number", "null"] }
+        }
+      }
+    },
+    "discussion_config": {
+      "type": "object",
+      "required": ["rounds"],
+      "properties": {
+        "rounds": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 3,
+          "default": 1,
+          "description": "讨论轮数。1=单轮，2-3=多轮交锋。执行结构由 agents 的 order 分组决定"
+        },
+        "include_synthesis": {
+          "type": "boolean",
+          "default": true
+        }
+      }
+    }
+  }
+}
